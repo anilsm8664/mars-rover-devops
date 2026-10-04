@@ -4,18 +4,18 @@ Production-style Python CLI implementation of the Mars Rover exercise, delivered
 
 ## What is included
 
-- Python CLI with validation, error handling and logging
-- Unit tests and coverage
-- Ruff linting
-- Docker containerization with non-root runtime
-- Container smoke test
-- Trivy HIGH/CRITICAL vulnerability gate
-- SonarQube analysis and enforced quality gate
-- Jenkins pipeline as code
-- Secure Jenkins credentials for Artifactory
-- Artifactory Docker image publication
-- Example valid and invalid inputs
-- Documentation and reproducible commands
+* Python CLI with validation, error handling and logging
+* Unit tests and coverage
+* Ruff linting
+* Docker containerization with non-root runtime
+* Container smoke test
+* Trivy HIGH/CRITICAL vulnerability gate
+* SonarQube analysis and enforced quality gate
+* Jenkins pipeline as code
+* Secure Jenkins credentials for Artifactory
+* Artifactory Docker image publication
+* Example valid and invalid inputs
+* Documentation and reproducible commands
 
 ## Prerequisites
 
@@ -65,7 +65,7 @@ Invalid plateau coordinates, rover positions, directions, commands, empty comman
 ```bash
 python -m venv .venv
 # Linux/macOS: source .venv/bin/activate
-# Windows PowerShell: .venv\\Scripts\\Activate.ps1
+# Windows PowerShell: .venv\\\\Scripts\\\\Activate.ps1
 python -m pip install --upgrade pip
 pip install -r requirements-dev.txt
 pytest -q
@@ -107,12 +107,12 @@ The pipeline is configured to fail on lint/test/quality-gate/smoke/security fail
 
 Configure:
 
-- SonarQube installation name: `sonarqube`
-- SonarQube webhook to Jenkins so `waitForQualityGate` can return
-- SonarQube Scanner available to the agent
-- Docker and Trivy on the agent
-- Username/password credential ID: `artifactory-docker`
-- Job/environment variables: `ARTIFACTORY_REGISTRY` and `ARTIFACTORY_REPOSITORY`
+* SonarQube installation name: `sonarqube`
+* SonarQube webhook to Jenkins so `waitForQualityGate` can return
+* SonarQube Scanner available to the agent
+* Docker and Trivy on the agent
+* Username/password credential ID: `artifactory-docker`
+* Job/environment variables: `ARTIFACTORY\_REGISTRY` and `ARTIFACTORY\_REPOSITORY`
 
 Never commit Artifactory credentials or tokens to Git. Jenkins injects them only during the publish step and Docker receives the password through `--password-stdin`.
 
@@ -122,21 +122,21 @@ Never commit Artifactory credentials or tokens to Git. Jenkins injects them only
 
 ## Security
 
-- No runtime third-party dependencies
-- Development dependencies are explicitly declared
-- Secrets stay in Jenkins Credentials
-- Docker runs as a non-root user
-- Smoke-test input is mounted read-only
-- Trivy scans the final image
-- Docker build uses `--pull`
-- No credentials are logged or committed
+* No runtime third-party dependencies
+* Development dependencies are explicitly declared
+* Secrets stay in Jenkins Credentials
+* Docker runs as a non-root user
+* Smoke-test input is mounted read-only
+* Trivy scans the final image
+* Docker build uses `--pull`
+* No credentials are logged or committed
 
 ## Artifactory
 
 The image is tagged using the Jenkins build number:
 
 ```text
-<registry>/<repository>/mars-rover:<BUILD_NUMBER>
+<registry>/<repository>/mars-rover:<BUILD\_NUMBER>
 ```
 
 Actual registry/repository values are environment-specific and must be provided by the organization.
@@ -169,3 +169,40 @@ Add smoke and security checks
 Add Artifactory publication
 Improve documentation
 ```
+
+
+
+\### Artifactory
+
+\- Artifactory stage is configured using Jenkins credential `artifactory-docker`.
+
+\- The stage was skipped during my runs because I could not provide the required Artifactory sign-up details/access.
+
+\- All stages before Artifactory completed successfully.
+
+
+
+\### Security
+
+\- Trivy initially reported a HIGH vulnerability in `libpcre2`.
+
+\- Fixed by running `apt-get upgrade` in the Dockerfile.
+
+\- No security exceptions were accepted.
+
+
+
+\### Jenkins
+
+\- Jenkins is configured locally on port `8081` because port `8080` was already in use.
+
+
+
+\### Python Versions
+
+\- Jenkins lint and tests run on Python `3.13`.
+
+\- Docker image and SonarQube use Python `3.12`.
+
+\- This version difference is a known limitation and can be aligned if required.
+
