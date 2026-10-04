@@ -1,4 +1,9 @@
 FROM python:3.12-slim
+
+RUN apt-get update \
+    && apt-get upgrade -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN groupadd --system --gid 10001 rover \
     && useradd --system --uid 10001 --gid 10001 --home-dir /app --shell /usr/sbin/nologin rover
 WORKDIR /app
