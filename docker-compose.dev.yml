@@ -1,0 +1,32 @@
+# Developer tooling in Docker: nothing but Docker needs to be installed on the host.
+# Usage (from the project folder):
+#   docker compose -f docker-compose.dev.yml run --rm lint
+#   docker compose -f docker-compose.dev.yml run --rm test
+#   docker compose -f docker-compose.dev.yml run --rm run
+x-python: &python
+  image: python:3.12-slim
+  working_dir: /work
+  volumes:
+    - .:/work
+    - pip_cache:/root/.cache/pip
+  environment:
+    PIP_DISABLE_PIP_VERSION_CHECK: "1"
+    PYTHONDONTWRITEBYTECODE: "1"
+
+services:
+  lint:
+    <<: *python
+    command: sh -c "pip install -q -r requirements-dev.txt && ruff check rover.py tests"
+
+  test:
+    <<: *python
+    command: >
+      sh -c "pip install -q -r requirements-dev.txt &&
+      python -m pytest -q --cov=rover --cov-report=term-missing --cov-report=xml:coverage.xml"
+
+  run:
+    <<: *python
+    command: python rover.py examples/input.txt
+
+volumes:
+  pip_cache:

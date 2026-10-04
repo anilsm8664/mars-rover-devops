@@ -1,0 +1,32 @@
+# Local CI lab: Jenkins + SonarQube on one network (so Sonar can call Jenkins back).
+services:
+  jenkins:
+    build: ./jenkins
+    container_name: jenkins
+    user: root
+    ports:
+      - "8080:8080"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  sonarqube:
+    image: sonarqube:community
+    container_name: sonarqube
+    ports:
+      - "9000:9000"
+    environment:
+      # Lets SonarQube call the Jenkins webhook on a private Docker address (local lab only).
+      SONAR_VALIDATEWEBHOOKS: "false"
+    volumes:
+      - sonar_data:/opt/sonarqube/data
+      - sonar_extensions:/opt/sonarqube/extensions
+      - sonar_logs:/opt/sonarqube/logs
+    restart: unless-stopped
+
+volumes:
+  jenkins_home:
+  sonar_data:
+  sonar_extensions:
+  sonar_logs:
