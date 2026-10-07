@@ -11,3 +11,9 @@ venv/
 .vscode/
 *.log
 coverage.xml
+
+test-results.xml
+.scannerwork/
+.ruff_cache/
+.coverage
+test-results.xml
